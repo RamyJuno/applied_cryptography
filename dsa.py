@@ -10,20 +10,22 @@ PARAM_Q = 0x8CF83642A709A097B447997640129DA299B1A47D1EB3750BA308B0FE64F5FBD3
 
 PARAM_G = 0x3FB32C9B73134D0B2E77506660EDBD484CA7B18F21EF205407F4793A1A0BA12510DBC15077BE463FFF4FED4AAC0BB555BE3A6C1B0C6B47B1BC3773BF7E8C6F62901228F8C28CBB18A55AE31341000A650196F931C77A57F2DDF463E5E9EC144B777DE62AAAB8A8628AC376D282D6ED3864E67982428EBC831D14348F6F2F9193B5045AF2767164E1DFC967C1FB3F2E55A4BD1BFFE83B9C80D052B985D182EA0ADB2A3B7313D3FE14C8484B1E052588B9B7D2BBD2DF016199ECD06E1557CD0915B3353BBB64E0EC377FD028370DF92B52C7891428CDC67EB6184B523D1DB246C32F63078490F00EF8D647D148D47954515E2327CFEF98C582664B4C0F6CC41659
 
+# Fonction de hashage
 def H(message):
     h = SHA256.new(message)
     return (int(h.hexdigest(), 16))
 
-def DSA_generate_nonce(("""TBC""")):
+# Génération du nonce k
+def DSA_generate_nonce(q):
+    return randrange(1, q - 1)
 
-    return ("""TBC""")
+# Génération des clés publiques et privées
+# à partir des paramètres MODP Group 24
+def DSA_generate_keys(g, p, q):
+    x = randrange(1, q - 1)
+    y = pow(g, x, p)
 
-
-def DSA_generate_keys("""TBC"""):
-    
-    return """TBC"""
-
-
+# Signature du message
 def DSA_sign(g, p, q, x, m):
     while True:
             # Generation du nonce
@@ -37,6 +39,7 @@ def DSA_sign(g, p, q, x, m):
             except ZeroDivisionError:
                 pass  
 
+# Vérification de la signature
 def DSA_verify(r, s, g, p, q, y, m):
     if not 0 < r < q or not 0 < s < q :
         return False
