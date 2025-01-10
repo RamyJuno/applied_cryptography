@@ -56,6 +56,7 @@ def test_multiplicative():
     r3 = (r1 * r2) % PARAM_Q
     c3 = ((c1_1 * c2_1) % PARAM_P, (c1_2 * c2_2) % PARAM_P)
     m3 = EG_decrypt(c3, private_key)
+    print(f"Multiplicative Test:\n  m1 = {m1}\n  m2 = {m2}\n  c1 = ({c1_1}, {c1_2})\n  c2 = ({c2_1}, {c2_2})\n  Combined c3 = {c3}\n  Decrypted m3 = {m3}")
     assert m3 == (m1 * m2) % PARAM_P, f"Assertion failed: m3 = {m3}, expected {(m1 * m2) % PARAM_P}"
     print("Multiplicative test passed!")
 
@@ -74,6 +75,7 @@ def test_additive():
     combined_ciphertext = (c1, c2)
     decrypted_value = EG_decrypt(combined_ciphertext, private_key)
     m_sum = bruteLog(PARAM_G, decrypted_value, PARAM_P)
+    print(f"Additive Test:\n  Messages = {messages}\n  Ciphertexts = {ciphertexts}\n  Combined Ciphertext = {combined_ciphertext}\n  Decrypted Value = {decrypted_value}\n  Sum = {m_sum}")
     print("Additive sum:", m_sum)
 
 # Run tests
