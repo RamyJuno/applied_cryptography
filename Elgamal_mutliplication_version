@@ -1,0 +1,63 @@
+from algebra import mod_inv, int_to_bytes
+from random import randint
+
+# MODP Group 24 Parameters
+PARAM_P = 0x87A8E61DB4B6663CFFBBD19C651959998CEEF608660DD0F25D2CEED4435E3B00E00DF8F1D61957D4FAF7DF4561B2AA3016C3D91134096FAA3BF4296D830E9A7C209E0C6497517ABD5A8A9D306BCF67ED91F9E6725B4758C022E0B1EF4275BF7B6C5BFC11D45F9088B941F54EB1E59BB8BC39A0BF12307F5C4FDB70C581B23F76B63ACAE1CAA6B7902D52526735488A0EF13C6D9A51BFA4AB3AD8347796524D8EF6A167B5A41825D967E144E5140564251CCACB83E6B486F6B3CA3F7971506026C0B857F689962856DED4010ABD0BE621C3A3960A54E710C375F26375D7014103A4B54330C198AF126116D2276E11715F693877FAD7EF09CADB094AE91E1A1597
+PARAM_Q = 0x8CF83642A709A097B447997640129DA299B1A47D1EB3750BA308B0FE64F5FBD3
+PARAM_G = 0x3FB32C9B73134D0B2E77506660EDBD484CA7B18F21EF205407F4793A1A0BA12510DBC15077BE463FFF4FED4AAC0BB555BE3A6C1B0C6B47B1BC3773BF7E8C6F62901228F8C28CBB18A55AE31341000A650196F931C77A57F2DDF463E5E9EC144B777DE62AAAB8A8628AC376D282D6ED3864E67982428EBC831D14348F6F2F9193B5045AF2767164E1DFC967C1FB3F2E55A4BD1BFFE83B9C80D052B985D182EA0ADB2A3B7313D3FE14C8484B1E052588B9B7D2BBD2DF016199ECD06E1557CD0915B3353BBB64E0EC377FD028370DF92B52C7891428CDC67EB6184B523D1DB246C32F63078490F00EF8D647D148D47954515E2327CFEF98C582664B4C0F6CC41659
+
+# Key Generation
+def EG_generate_keys():
+    private_key = randint(1, PARAM_Q - 1)  # Secret key
+    public_key = pow(PARAM_G, private_key, PARAM_P)  # g^x mod p
+    return private_key, public_key
+
+# Multiplicative Encryption
+def EGM_encrypt(message, public_key):
+    k = randint(1, PARAM_Q - 1)  # Random nonce
+    r = pow(PARAM_G, k, PARAM_P)  # r = g^k mod p
+    c = (message * pow(public_key, k, PARAM_P)) % PARAM_P  # c = m * y^k mod p
+    return r, c
+
+# Decryption
+def EG_decrypt(r, c, private_key):
+    s = pow(r, private_key, PARAM_P)  # Shared secret s = r^x mod p
+    message = (c * mod_inv(s, PARAM_P)) % PARAM_P  # m = c * s^-1 mod p
+    return message
+
+# Homomorphic Multiplicative Encryption
+def homomorphic_multiplicative_demo():
+    # Key generation
+    private_key, public_key = EG_generate_keys()
+
+    # Messages
+    m1 = 0x2661b673f687c5c3142f806d500d2ce57b1182c9b25bfe4fa09529424b
+    m2 = 0x1c1c871caabca15828cf08ee3aa3199000b94ed15e743c3
+
+    # Encryption
+    r1, c1 = EGM_encrypt(m1, public_key)
+    r2, c2 = EGM_encrypt(m2, public_key)
+    print(f"Encrypted m1: (r1, c1) = ({r1}, {c1})")
+    print(f"Encrypted m2: (r2, c2) = ({r2}, {c2})")
+
+    # Homomorphic property
+    r3 = (r1 * r2) % PARAM_P  # r3 = r1 * r2 mod p
+    c3 = (c1 * c2) % PARAM_P  # c3 = c1 * c2 mod p
+    print(f"Homomorphic Encrypted (r3, c3): ({r3}, {c3})")
+
+    # Decrypt combined ciphertext
+    m3 = EG_decrypt(r3, c3, private_key)
+    print(f"Decrypted m3: {m3}")
+
+    # Verify m3 = m1 * m2
+    expected_m3 = (m1 * m2) % PARAM_P
+    print(f"Expected m3: {expected_m3}")
+    print(f"Decryption successful: {m3 == expected_m3}")
+
+    # Decode m3 to bytes
+    decoded_m3 = int_to_bytes(m3)
+    print(f"Decoded m3: {decoded_m3}")
+
+
+if __name__ == "__main__":
+    homomorphic_multiplicative_demo()
