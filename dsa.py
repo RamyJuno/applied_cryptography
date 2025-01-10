@@ -30,7 +30,7 @@ def DSA_sign(g, p, q, x, m):
             # SHA_256(message)
             h = H(m)
             # Generation du nonce
-            k = randrange(2, q)
+            k = DSA_generate_nonce(q)
             # Calcul de r et de s
             r = pow(g, k, p) % q
             try:
