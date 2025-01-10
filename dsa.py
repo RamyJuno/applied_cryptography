@@ -20,7 +20,6 @@ def DSA_generate_nonce(q):
     return randrange(1, q - 1)
 
 # Génération des clés publiques et privées
-# à partir des paramètres MODP Group 24
 def DSA_generate_keys(g, p, q):
     x = randrange(1, q - 1)
     y = pow(g, x, p)
@@ -28,26 +27,27 @@ def DSA_generate_keys(g, p, q):
 # Signature du message
 def DSA_sign(g, p, q, x, m):
     while True:
+            # SHA_256(message)
+            h = H(m)
             # Generation du nonce
             k = randrange(2, q)
+            # Calcul de r et de s
             r = pow(g, k, p) % q
-            # SHA_256(message)
-            mess = H(m)
             try:
-                s = (mod_inv(k, q) * (mess + x * r)) % q
+                s = (mod_inv(k, q) * (h + x * r)) % q
                 return hex(r), hex(s)
             except ZeroDivisionError:
                 pass  
 
 # Vérification de la signature
 def DSA_verify(r, s, g, p, q, y, m):
+    # On s'assure que 0 < r < q et que 0 < s < q 
     if not 0 < r < q or not 0 < s < q :
         return False
     w = pow(s, -1, q)
     u1 = (H(m) * w) % q
     u2 = (r * w) % q
     v = (pow(g, u1, p) * pow(y, u2, p)) % p % q
-    print(v)
     if v == r:
         return True
     return False
