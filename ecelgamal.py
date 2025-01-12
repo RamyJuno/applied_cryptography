@@ -2,11 +2,16 @@ from rfc7748 import add, sub, mult, computeVcoordinate
 from algebra import mod_inv
 from random import randint
 
-p = 2**255 - 19
-ORDER = 2**252 + 27742317777372353535851937790883648493
+# Paramètres de la courbe
+p = 2**255 - 19  # Modulo de Curve25519
 
+# Ordre du point de base
+ORDER = 2**252 + 27742317777372353535851937790883648493 
 BaseU = 9
+# Compute V coordinate du point de base U
 BaseV = computeVcoordinate(BaseU)
+
+# Point de base sur le coubre
 base_point = (BaseU, BaseV)
 
 # Brute force logarithme
@@ -20,6 +25,7 @@ def bruteECLog(C1, C2, p):
 
 # Génération d'une paire de clés
 def ECEG_generate_keys(base_point, order):
+    # 1 < x < ordre - 1 et y = x * G
     x = randint(1, order - 1)
     y = mult(x, *base_point, p)
     return x, y
@@ -35,9 +41,11 @@ def ECencode(message):
 # Chiffrement du message
 def ECEG_encrypt(message, public_key, base_point, order):
     m_point = ECencode(message)
+    # génération du nonce k
     k = randint(1, order - 1)
     kG = mult(k, *base_point, p) 
     kY = mult(k, *public_key, p)
+    # c1 = nonce * G et c2 = Message + nonce * clé_pubique
     c1 = kG
     c2 = add(*m_point, *kY, p)
     return c1, c2
