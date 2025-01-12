@@ -5,10 +5,15 @@ from algebra import mod_inv
 
 # Paramètres de la courbe
 p = 2**255 - 19  # Modulo de Curve25519
-ORDER = 2**252 + 27742317777372353535851937790883648493  # Ordre du point de base
+
+# Ordre du point de base
+ORDER = 2**252 + 27742317777372353535851937790883648493 
 BaseU = 9
-BaseV = computeVcoordinate(BaseU)  # Compute V coordinate du point de base
-base_point = (BaseU, BaseV)  # Point de base sur le coubre
+# Compute V coordinate du point de base U
+BaseV = computeVcoordinate(BaseU)
+
+# Point de base sur le coubre
+base_point = (BaseU, BaseV)
 
 
 # Fonction de hashage
