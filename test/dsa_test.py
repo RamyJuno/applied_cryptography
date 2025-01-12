@@ -62,4 +62,4 @@ keys = DSA_sign(PARAM_G, PARAM_P, PARAM_Q, x, message)
 print("R = ", hex(keys[0]))
 print("S = ", hex(keys[1]))
 
-print(DSA_verify(keys[0], keys[1], PARAM_G, PARAM_P, PARAM_Q, y, message))
+print("V == R ? " + str(DSA_verify(keys[0], keys[1], PARAM_G, PARAM_P, PARAM_Q, y, message)))
