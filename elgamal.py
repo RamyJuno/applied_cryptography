@@ -56,36 +56,62 @@ def EG_decrypt(ciphertext, x):
 
 # Test multiplicative homomorphic property
 def test_multiplicative():
+    # Génération d'une paire de clés
     private_key, public_key = EG_generate_keys()
+
+    # Messages
     m1 = 0x2661b673f687c5c3142f806d500d2ce57b1182c9b25bfe4fa09529424b
     m2 = 0x1c1c871caabca15828cf08ee3aa3199000b94ed15e743c3
+
+    # Chiffrement 
     r1, (c1_1, c1_2) = EGM_encrypt(m1, public_key)
     r2, (c2_1, c2_2) = EGM_encrypt(m2, public_key)
+
+    # Multiplication de r1 et r2
     r3 = (r1 * r2) % PARAM_Q
+
+    # Déchiffrement
     c3 = ((c1_1 * c2_1) % PARAM_P, (c1_2 * c2_2) % PARAM_P)
     m3 = EG_decrypt(c3, private_key)
-    print(f"Multiplicative Test:\n  m1 = {m1}\n  m2 = {m2}\n  c1 = ({c1_1}, {c1_2})\n  c2 = ({c2_1}, {c2_2})\n  Combined c3 = {c3}\n  Decrypted m3 = {m3}")
-    assert m3 == (m1 * m2) % PARAM_P, f"Assertion failed: m3 = {m3}, expected {(m1 * m2) % PARAM_P}"
-    print("Multiplicative test passed!")
+
+    # Test : On vérifie si m3 = m1 * m2
+    print(f"Test multiplicatif:\n  m1 = {m1}\n  m2 = {m2}\n   c3 = {c3}\n  m3 déchifré = {m3}")
+    assert m3 == (m1 * m2) % PARAM_P, f"Test échoué: m3 = {m3}, attendu {(m1 * m2) % PARAM_P}"
+    print("Test réussi")
 
 # Test ELGamal : Chiffrement additif
 def test_additive():
+    # Génération d'une paire de clé
     private_key, public_key = EG_generate_keys()
+    
     messages = [1, 0, 1, 1, 0]
+
+    # Chiffrement des messages
     ciphertexts = [EGA_encrypt(m, public_key) for m in messages]
+
     r = 1
     c1 = 1
     c2 = 1
+
     for ct in ciphertexts:
         r = (r * ct[0]) % PARAM_Q
         c1 = (c1 * ct[1][0]) % PARAM_P
         c2 = (c2 * ct[1][1]) % PARAM_P
+
+    # Déchiffrement des ciphertexts combiné
     combined_ciphertext = (c1, c2)
     decrypted_value = EG_decrypt(combined_ciphertext, private_key)
+
+    # Bruteforce et assertion
     m_sum = bruteLog(PARAM_G, decrypted_value, PARAM_P)
-    print(f"Additive Test:\n  Messages = {messages}\n  Ciphertexts = {ciphertexts}\n  Combined Ciphertext = {combined_ciphertext}\n  Decrypted Value = {decrypted_value}\n  Sum = {m_sum}")
-    print("Additive sum:", m_sum)
+    print(f"Test additif :\n  Messages = {messages}\n  Valeur déchiffrée = {decrypted_value}\n ")
+    print("Somme :", m_sum)
 
 # Run tests
 test_multiplicative()
+
+print('')
+print('')
+print('')
+
 test_additive()

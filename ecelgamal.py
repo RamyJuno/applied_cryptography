@@ -64,8 +64,8 @@ if __name__ == "__main__":
     private_key, public_key = ECEG_generate_keys(base_point, ORDER)
 
     messages = [1, 0, 1, 1, 1]
+    print("Messages : ", messages)
     ciphertexts = [ECEG_encrypt(m, public_key, base_point, ORDER) for m in messages]
-
     # Addition des ciphertexts : homomorphique
     combined_r = (1, 0)
     combined_c = (1, 0)
