@@ -1,7 +1,7 @@
 from rfc7748 import add, computeVcoordinate
 import random
 
-# Importation des algorithme de chiffrement
+# Importation des algorithmes de chiffrement
 from ecdsa import ECDSA_generate_keys, ECDSA_sign, ECDSA_verify
 from ecelgamal import ECEG_generate_keys, ECEG_encrypt, ECEG_decrypt, bruteECLog
 
