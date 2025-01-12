@@ -59,11 +59,14 @@ def ECDSA_verify(public_key, message, signature, base_point, order):
     u1 = (message_hash * s_inv) % order
     u2 = (r * s_inv) % order
 
-    # Explicitly pass `p` to `mult` and `add`
-    p1 = mult(u1, *base_point, p)  # u1 * G
-    p2 = mult(u2, *public_key, p)  # u2 * Q
-    result_point = add(*p1, *p2, p)  # result_point = p1 + p2
+    # p1 = u1 * G et p2 = u2 * G
+    p1 = mult(u1, *base_point, p)  
+    p2 = mult(u2, *public_key, p)
 
+    # result_point = p1 + p2
+    result_point = add(*p1, *p2, p)
+
+    # Si result_point[0] % order == r, alors la signature est authentifuqe
     return result_point[0] % order == r
 
 

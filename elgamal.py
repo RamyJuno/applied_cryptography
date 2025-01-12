@@ -20,7 +20,7 @@ def bruteLog(g, c, p):
             return i + 1
     return -1
 
-# Génération d'une paire de céls
+# Génération d'une paire de clés
 def EG_generate_keys():
     x = randint(1, PARAM_Q - 1)
     y = pow(PARAM_G, x, PARAM_P)
