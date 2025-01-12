@@ -68,7 +68,7 @@ def test_multiplicative():
     assert m3 == (m1 * m2) % PARAM_P, f"Assertion failed: m3 = {m3}, expected {(m1 * m2) % PARAM_P}"
     print("Multiplicative test passed!")
 
-# Test additive homomorphic property
+# Test ELGamal : Chiffrement additif
 def test_additive():
     private_key, public_key = EG_generate_keys()
     messages = [1, 0, 1, 1, 0]
